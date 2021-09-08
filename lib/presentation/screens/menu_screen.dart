@@ -40,7 +40,7 @@ class MenuScreen extends StatelessWidget {
                   SizedBox(height: 8.hs),
                   OutlinedButton(
                     child: const TypeScale.h3(Text('High scores')),
-                    onPressed: () {},
+                    onPressed: () => context.router.navigate(const HighScoresRoute()),
                   ),
                 ],
               ),

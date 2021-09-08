@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:f_set/modules/game/data/game_cubit.dart';
+import 'package:f_set/modules/high_scores/data/high_scores_cubit.dart';
 import 'package:f_set/services/api_client.dart';
 import 'package:f_set/services/api_service.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,11 @@ class GlobalScopeDependencies extends HookWidget {
     return MultiBlocProvider(providers: [
       BlocProvider<GameCubit>(
         create: (context) => GameCubit(),
+      ),
+      BlocProvider<HighScoresCubit>(
+        create: (context) => HighScoresCubit(
+          apiService: _apiService.value
+        ),
       ),
     ], child: child);
   }

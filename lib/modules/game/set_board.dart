@@ -18,6 +18,25 @@ class SetBoard extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pickedCards = useState(<SetCard?>[]);
+
+    void onCardPressed(SetCard card) {
+      if (pickedCards.value.contains(card)) {
+        final updatedItems = [...pickedCards.value]..replaceItemWithNull(card);
+        pickedCards.value = updatedItems;
+      } else {
+        if (pickedCards.value.effectiveLength < 3) {
+          pickedCards.value = [...pickedCards.value]..replaceFirstNullOrAdd(card);
+        } else {
+          pickedCards.value = [card];
+        }
+      }
+
+      if (pickedCards.value.effectiveLength == 3) {
+        context.read<GameCubit>().checkSet(pickedCards.value);
+      }
+    }
+
     return Container(
       padding: EdgeInsets.all(16.hs),
       child: Column(
@@ -32,22 +51,27 @@ class SetBoard extends HookWidget {
                   flex: 7,
                   child: CardGrid(
                     cards: context.select((GameCubit cubit) => cubit.state.board),
-                    highlightedCards: [],
-                    onCardPressed: (card) {},
+                    highlightedCards: pickedCards.value,
+                    onCardPressed: onCardPressed,
                   ),
                 ),
                 Expanded(
                   flex: 4,
                   child: _InfoPanel(
-                    requestHint: () {},
+                    requestHint: () {
+                      final setCards = context.read<GameCubit>().state.setCards..shuffle();
+                      if (setCards.effectiveLength > 0) {
+                        pickedCards.value = [setCards.first];
+                      }
+                    },
                   ),
                 ),
               ],
             ),
           ),
           _PickedCardInfo(
-            cards: [],
-            onCardPressed: (card) {},
+            cards: pickedCards.value,
+            onCardPressed: (card) => pickedCards.value = [...pickedCards.value]..replaceItemWithNull(card),
           )
         ],
       ),
@@ -157,7 +181,50 @@ class _Draw3ExtraButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text('+3');
+    return Builder(
+      builder: (context) {
+        final canDraw = context.select((GameCubit cubit) => cubit.state.canDraw3Extra);
+
+        return AnimatedOpacity(
+          duration: 400.milliseconds,
+          opacity: canDraw ? 1 : 0,
+          child: SizedBox(
+            width: 50.hs,
+            child: Transform.rotate(
+              angle: 8.degrees,
+              child: Stack(
+                children: [
+                  Transform.rotate(
+                    alignment: Alignment.bottomLeft,
+                    angle: -16.degrees,
+                    child: EmptyCard(borderWidth: 0.5, borderColor: AppTheme.of(context).cardBorderColor),
+                  ),
+                  Transform.rotate(
+                    alignment: Alignment.bottomLeft,
+                    angle: -8.degrees,
+                    child: EmptyCard(borderWidth: 0.5, borderColor: AppTheme.of(context).cardBorderColor),
+                  ),
+                  AspectRatio(
+                    aspectRatio: 2.25 / 3.5,
+                    child: Padding(
+                      padding: EdgeInsets.all(2.hs),
+                      child: OutlinedButton(
+                        onPressed: context.read<GameCubit>().draw3Extra,
+                        child: const Text('+3'),
+                        style: ButtonStyle(
+                          elevation: MaterialStateProperty.all(6),
+                          padding: MaterialStateProperty.all(EdgeInsets.zero),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 
