@@ -1,0 +1,33 @@
+include: package:lint/analysis_options.yaml
+
+linter:
+  rules:
+    sort_pub_dependencies: false
+    sort_child_properties_last: false
+    avoid_positional_boolean_parameters: false
+    avoid_function_literals_in_foreach_calls: false
+    constant_identifier_names: false
+    sort_unnamed_constructors_first: false
+    avoid_classes_with_only_static_members: false
+    prefer_if_elements_to_conditional_expressions: false
+    avoid_bool_literals_in_conditional_expressions: false
+    directives_ordering: false
+
+analyzer:
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+  exclude:
+    - lib/**/*.g.dart
+    - lib/**/*.gr.dart
+    - lib/**/*.freezed.dart
+    - packages/**/*.dart
+
+  errors:
+    prefer_const_constructors: warning
+    unused_import: warning
+    invalid_null_aware_operator: info
+    avoid_unnecessary_containers: warning
+    prefer_const_constructors_in_immutables: warning
+    import_of_legacy_library_into_null_safe: ignore
+    
