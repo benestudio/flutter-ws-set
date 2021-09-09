@@ -57,13 +57,19 @@ class SetBoard extends HookWidget {
                 ),
                 Expanded(
                   flex: 4,
-                  child: _InfoPanel(
-                    requestHint: () {
-                      final setCards = context.read<GameCubit>().state.setCards..shuffle();
-                      if (setCards.effectiveLength > 0) {
-                        pickedCards.value = [setCards.first];
-                      }
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      pickedCards.value = [];
                     },
+                    child: _InfoPanel(
+                      requestHint: () {
+                        final setCards = context.read<GameCubit>().state.setCards..shuffle();
+                        if (setCards.effectiveLength > 0) {
+                          pickedCards.value = [setCards.first];
+                        }
+                      },
+                    )
                   ),
                 ),
               ],
