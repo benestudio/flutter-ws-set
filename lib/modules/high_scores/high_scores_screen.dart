@@ -9,10 +9,7 @@ class HighScoresScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('high_scores_screen'),
-        backwardsCompatibility: false,
-      ),
+      appBar: AppBar(title: const Text('high_scores_screen')),
       body: const Center(
         child: Text(''),
       ),
